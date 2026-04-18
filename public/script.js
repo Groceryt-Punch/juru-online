@@ -1,116 +1,101 @@
-const boardMissions = [
-    "출발", "술한잔", "노래한절", "안주한입", "주사위더블", "사랑해", "물한잔", "무인도",
-    "귀요미", "애교", "얼빡샷", "세계여행",
-    "적립적산", "한잔적립", "물한잔", "안주한입", "술한잔", "스쿼트", "Q&A", "적립청산",
+const socket = io(); // 서버 연결
+
+const missions = [
+    "출발", "술한잔", "노래", "안주", "더블", "사랑해", "물한잔", "무인도", 
+    "귀요미", "애교", "얼빡샷", "세계여행", 
+    "적립", "한잔", "물한잔", "안주", "술한잔", "스쿼트", "Q&A", "청산", 
     "매도", "메롱", "의리주", "하이볼"
 ];
 
-let players = [];
-let currentTurn = 0;
-const emojis = ["💖", "⭐", "🐱", "🐶"];
-
-// 플레이어 추가 (대기실 로직)
-function addPlayer() {
-    const input = document.getElementById('nickname-input');
-    const name = input.value.trim();
-    
-    if (name === "") return alert("닉네임을 입력하세요!");
-    if (players.length >= 4) return alert("최대 4명까지만 가능합니다!");
-    
-    const newPlayer = {
-        id: players.length,
-        name: name,
-        pos: 0,
-        emoji: emojis[players.length]
-    };
-    
-    players.push(newPlayer);
-    updateLobby();
-    input.value = "";
+// 게임 입장
+function join() {
+    const nick = document.getElementById('nick-input').value.trim();
+    if(nick) {
+        socket.emit('joinGame', nick);
+        document.getElementById('lobby').style.display = 'none';
+        document.getElementById('game-screen').style.display = 'flex';
+        document.getElementById('game-screen').style.flexDirection = 'column';
+        document.getElementById('game-screen').style.alignItems = 'center';
+    } else {
+        alert("닉네임을 입력해주세요!");
+    }
 }
 
-function updateLobby() {
-    const list = document.getElementById('player-list');
-    list.innerHTML = players.map(p => `<li>${p.emoji} ${p.name}</li>`).join('');
-    document.getElementById('player-count').innerText = players.length;
-    document.getElementById('start-btn').disabled = players.length < 2; // 최소 2명
+// 주사위 굴리기 요청
+function roll() {
+    socket.emit('rollDice');
 }
 
-// 게임 시작
-function startGame() {
-    document.getElementById('lobby').style.display = 'none';
-    document.getElementById('game-screen').style.display = 'flex';
-    document.getElementById('game-screen').style.flexDirection = 'column';
-    document.getElementById('game-screen').style.alignItems = 'center';
+// 게임 상태 업데이트 (턴 확인 및 말 위치 갱신)
+socket.on('updateGameState', (data) => {
+    renderBoard(); // 보드판 그리기
+    const piecesLayer = document.getElementById('pieces-layer');
+    piecesLayer.innerHTML = ''; 
+
+    const playersArray = Object.values(data.players);
     
-    initBoard();
-    players.forEach(p => {
-        const piece = document.getElementById(`player-${p.id}`);
-        piece.style.display = 'flex';
+    playersArray.forEach((p, index) => {
+        const piece = document.createElement('div');
+        piece.className = 'player-piece';
         piece.innerText = p.emoji;
-    });
-    updateTurnDisplay();
-}
+        
+        // 색상 부여 (순서대로)
+        const colors = ["#ff80ab", "#82b1ff", "#b39ddb", "#a5d6a7"];
+        piece.style.backgroundColor = colors[index % 4];
+        
+        piecesLayer.appendChild(piece);
+        
+        // 위치 업데이트
+        const cell = document.getElementById(`cell-${p.pos}`);
+        // 4명이 한 칸에 있을 때 겹치지 않게 오프셋 계산
+        const offsets = [
+            {x: 5, y: 5}, {x: 40, y: 5},
+            {x: 5, y: 40}, {x: 40, y: 40}
+        ];
+        const offset = offsets[index % 4];
 
-function initBoard() {
+        piece.style.top = (cell.offsetTop + offset.y) + "px";
+        piece.style.left = (cell.offsetLeft + offset.x) + "px";
+    });
+
+    // 내 차례인지 확인하여 버튼 제어
+    const turnName = data.players[data.currentTurn]?.name || "기다리는 중...";
+    const infoDisplay = document.getElementById('turn-info');
+    const rollBtn = document.getElementById('roll-btn');
+
+    if (socket.id === data.currentTurn) {
+        infoDisplay.innerText = `★ 지금 내 차례입니다! ★`;
+        infoDisplay.style.color = "#ff4081";
+        rollBtn.disabled = false;
+        rollBtn.innerText = "🎲 주사위 던지기";
+    } else {
+        infoDisplay.innerText = `현재 차례: ${turnName}`;
+        infoDisplay.style.color = "#888";
+        rollBtn.disabled = true;
+        rollBtn.innerText = "상대방 차례 대기 중...";
+    }
+});
+
+// 주사위 결과 수신
+socket.on('diceResult', (data) => {
+    const mission = missions[data.newPos];
+    document.getElementById('status-msg').innerText = `${data.playerName}님 🎲${data.dice} ➔ [${mission}]`;
+});
+
+// 보드판 렌더링 함수
+function renderBoard() {
     const board = document.getElementById('board');
-    boardMissions.forEach((mission, i) => {
+    if (document.querySelector('.cell')) return; // 이미 그려졌으면 중단
+    
+    missions.forEach((m, i) => {
         const div = document.createElement('div');
         div.className = 'cell';
         div.id = `cell-${i}`;
-        div.innerText = mission;
+        div.innerText = m;
         
-        let row, col;
-        if (i < 8) { row = 1; col = i + 1; }
-        else if (i < 12) { row = i - 8 + 2; col = 8; }
-        else if (i < 20) { row = 6; col = 8 - (i - 12); }
-        else { row = 6 - (i - 20) - 1; col = 1; }
-        
-        div.style.gridRow = row; div.style.gridColumn = col;
+        let r, c;
+        if(i<8){r=1;c=i+1}else if(i<12){r=i-8+2;c=8}else if(i<20){r=6;c=8-(i-12)}else{r=6-(i-20)-1;c=1}
+        div.style.gridRow = r; div.style.gridColumn = c;
         board.appendChild(div);
     });
-    updatePieces();
-}
-
-function updatePieces() {
-    players.forEach(p => {
-        const target = document.getElementById(`cell-${p.pos}`);
-        const piece = document.getElementById(`player-${p.id}`);
-        
-        // 4명이 겹치지 않게 배치하는 오프셋
-        const offsets = [
-            { x: -10, y: -10 }, { x: 10, y: -10 },
-            { x: -10, y: 10 }, { x: 10, y: 10 }
-        ];
-
-        const top = target.offsetTop + (target.offsetHeight/2) - (piece.offsetHeight/2) + offsets[p.id].y;
-        const left = target.offsetLeft + (target.offsetWidth/2) - (piece.offsetWidth/2) + offsets[p.id].x;
-        
-        piece.style.top = `${top}px`;
-        piece.style.left = `${left}px`;
-    });
-}
-
-function updateTurnDisplay() {
-    const p = players[currentTurn];
-    const display = document.getElementById('turn-display');
-    display.innerText = `현재 차례: ${p.emoji} ${p.name}`;
-    display.style.color = getPlayerColor(p.id);
-}
-
-function getPlayerColor(id) {
-    return ["#ff4081", "#1976d2", "#7b1fa2", "#2e7d32"][id];
-}
-
-function rollDice() {
-    const dice = Math.floor(Math.random() * 6) + 1;
-    document.getElementById('dice-value').innerText = `🎲 ${dice}`;
-    
-    players[currentTurn].pos = (players[currentTurn].pos + dice) % boardMissions.length;
-    updatePieces();
-    
-    document.getElementById('mission-text').innerText = `${players[currentTurn].name}: [${boardMissions[players[currentTurn].pos]}]`;
-    
-    currentTurn = (currentTurn + 1) % players.length;
-    updateTurnDisplay();
 }
