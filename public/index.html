@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>온라인 주루마블</title>
+    <title>온라인 주루마블 - 무제한 모드</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
@@ -11,10 +11,9 @@
     <div id="lobby" class="pink-box">
         <h2 class="logo">🍻 온라인 주루마블</h2>
         <div id="setup-form">
-            <input type="text" id="nick-input" placeholder="닉네임 (최대 5자)">
-            <button onclick="join()">게임 입장</button>
+            <input type="text" id="nick-input" placeholder="닉네임 입력" maxlength="5">
+            <button onclick="join()">입장하기</button>
         </div>
-        <p style="color: #888; font-size: 14px; margin-top: 15px;">링크를 공유해 친구들을 초대하세요!</p>
     </div>
 
     <div id="game-screen" style="display:none;">
@@ -23,14 +22,13 @@
         </div>
 
         <div id="ui-panel" class="pink-box">
-            <div id="turn-info">누구 차례일까요?</div>
+            <div id="turn-info">대기 중...</div>
             <div class="dice-area">
                 <button id="roll-btn" onclick="roll()" disabled>🎲 주사위 던지기</button>
             </div>
-            <div id="status-msg">친구들을 기다리고 있습니다...</div>
+            <div id="status-msg">다른 플레이어를 기다리고 있습니다.</div>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
