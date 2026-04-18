@@ -1,51 +1,16 @@
-body { 
-    font-family: 'Jua', sans-serif; 
-    background-color: #fff5f8; 
-    display: flex; 
-    flex-direction: column;
-    justify-content: center; 
-    align-items: center; 
-    min-height: 100vh; 
-    margin: 0; 
-}
+body { font-family: 'Jua', sans-serif; background-color: #fff5f8; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+.pink-box { background: white; border: 5px solid #ffb6c1; border-radius: 25px; padding: 25px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
+#setup-form { display: flex; flex-direction: column; gap: 10px; }
+#setup-form input { padding: 12px; border: 2px solid #ffb6c1; border-radius: 10px; font-family: 'Jua'; font-size: 16px; width: 250px; }
 
-.pink-box { 
-    background: white; 
-    border: 5px solid #ffb6c1; 
-    border-radius: 25px; 
-    padding: 25px; 
-    text-align: center; 
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1); 
-}
+#board { display: grid; grid-template-columns: repeat(8, 85px); grid-template-rows: repeat(6, 95px); gap: 5px; position: relative; background: white; padding: 15px; border-radius: 20px; border: 4px solid #ffb6c1; }
+.cell { border: 1px solid #ffd1dc; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #ff1493; background: #fff; font-weight: bold; text-align: center; }
 
-#board { 
-    display: grid; 
-    grid-template-columns: repeat(8, 85px); 
-    grid-template-rows: repeat(6, 95px); 
-    gap: 5px; 
-    position: relative; 
-    background: white; 
-    padding: 15px; 
-    border-radius: 20px; 
-    border: 4px solid #ffb6c1; 
-}
-
-.cell { 
-    border: 1px solid #ffd1dc; 
-    border-radius: 12px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    font-size: 13px; 
-    color: #ff1493; 
-    background: #fff;
-    font-weight: bold;
-}
-
+/* 말 디자인: 이미지 지원 */
 .player-piece { 
     position: absolute; 
-    width: 28px; 
-    height: 28px; 
+    width: 35px; 
+    height: 35px; 
     border-radius: 50%; 
     border: 2px solid white; 
     z-index: 10; 
@@ -53,24 +18,16 @@ body {
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 18px; 
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    font-size: 20px; 
+    box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
 }
 
 #ui-panel { margin-top: 15px; width: 450px; }
 #turn-info { font-size: 22px; color: #ff1493; margin-bottom: 10px; }
-#status-msg { font-size: 18px; margin-top: 10px; color: #555; }
-
-#roll-btn { 
-    background: #ff4081; 
-    color: white; 
-    border: none; 
-    padding: 12px 35px; 
-    font-size: 20px; 
-    border-radius: 30px; 
-    cursor: pointer; 
-    font-family: 'Jua';
-}
-
+#status-msg { font-size: 18px; margin-top: 10px; color: #555; font-weight: bold; }
+#roll-btn { background: #ff4081; color: white; border: none; padding: 12px 35px; font-size: 20px; border-radius: 30px; cursor: pointer; font-family: 'Jua'; transition: 0.2s; }
 #roll-btn:disabled { background: #ddd; cursor: not-allowed; opacity: 0.6; }
-#nick-input { padding: 8px; border: 2px solid #ffb6c1; border-radius: 8px; font-family: 'Jua'; margin-right: 5px; }
