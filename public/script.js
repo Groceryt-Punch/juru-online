@@ -9,7 +9,7 @@ function join() {
         document.getElementById('lobby').style.display = 'none';
         document.getElementById('game-screen').style.display = 'block';
     } else {
-        alert("닉네임을 입력해주세요!");
+        alert("닉네임을 입력하세요!");
     }
 }
 
@@ -25,41 +25,34 @@ socket.on('updateGameState', (data) => {
     Object.values(data.players).forEach((p) => {
         const piece = document.createElement('div');
         piece.className = 'player-piece';
-        
         if (p.customImg) {
-            // 이미지가 있으면 배경으로 설정
             piece.style.backgroundImage = `url('${p.customImg}')`;
             piece.innerText = '';
         } else {
-            // 이미지가 없으면 이모지와 랜덤 색상 사용
             piece.innerText = p.emoji;
             piece.style.backgroundColor = p.color;
         }
-        
         piecesLayer.appendChild(piece);
         
         const cell = document.getElementById(`cell-${p.pos}`);
-        // 무제한 인원용 랜덤 분산 배치
-        const randomX = Math.random() * 40 + 5; 
-        const randomY = Math.random() * 50 + 5; 
-
+        // 커진 칸 사이즈(120x130)에 맞춰 랜덤 분산 범위 확대
+        const randomX = Math.random() * 65 + 5; 
+        const randomY = Math.random() * 75 + 5; 
         piece.style.top = (cell.offsetTop + randomY) + "px";
         piece.style.left = (cell.offsetLeft + randomX) + "px";
     });
 
     const turnPlayer = data.players[data.currentTurn];
-    const turnName = turnPlayer ? turnPlayer.name : "대기 중";
+    const isMyTurn = socket.id === data.currentTurn;
     const infoDisplay = document.getElementById('turn-info');
     const rollBtn = document.getElementById('roll-btn');
 
-    if (socket.id === data.currentTurn) {
-        infoDisplay.innerText = `★ 내 차례입니다! ★`;
+    if (isMyTurn) {
+        infoDisplay.innerText = `★ 내 차례! 주사위를 던지세요! ★`;
         rollBtn.disabled = false;
-        rollBtn.style.opacity = "1";
     } else {
-        infoDisplay.innerText = `현재 차례: ${turnName}`;
+        infoDisplay.innerText = `현재 차례: ${turnPlayer ? turnPlayer.name : "대기 중"}`;
         rollBtn.disabled = true;
-        rollBtn.style.opacity = "0.6";
     }
 });
 
