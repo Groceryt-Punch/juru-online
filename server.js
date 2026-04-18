@@ -15,17 +15,16 @@ let currentTurnIndex = 0;
 const emojis = ["💖", "⭐", "🐱", "🐶", "🐥", "🍀", "🦊", "🐻", "🐰", "🦁", "🐧", "🦄"];
 
 io.on('connection', (socket) => {
-    socket.on('joinGame', (nickname) => {
+    socket.on('joinGame', (data) => {
         const playerCount = Object.keys(players).length;
         
-        // 무제한 입장 설정
         players[socket.id] = {
             id: socket.id,
-            name: nickname,
+            name: data.nickname,
             pos: 0,
-            // 준비된 이모지가 끝나면 마지막 이모지 사용
+            // 사용자가 입력한 이미지 URL이 있으면 저장, 없으면 null
+            customImg: data.imgUrl || null,
             emoji: emojis[playerCount] || emojis[emojis.length - 1],
-            // 인원이 많아도 구분되도록 랜덤 색상 부여
             color: `hsl(${Math.random() * 360}, 75%, 70%)`
         };
         turnOrder.push(socket.id);
@@ -65,5 +64,5 @@ io.on('connection', (socket) => {
 });
 
 server.listen(3000, '0.0.0.0', () => {
-    console.log("서버가 시작되었습니다. 포트 3000을 Public으로 설정하세요!");
+    console.log("서버 실행 중! 포트 3000을 Public으로 설정하세요.");
 });
