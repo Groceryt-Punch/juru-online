@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>4인 멀티 주루마블</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="lobby" class="pink-box">
+        <h1 class="logo">🍻 주루마블 대기실</h1>
+        <div id="setup-form">
+            <input type="text" id="nickname-input" placeholder="닉네임 입력 (최대 5자)">
+            <button onclick="addPlayer()">참가하기</button>
+        </div>
+        <div id="player-list-container">
+            <h3>참가자 목록 (<span id="player-count">0</span>/4)</h3>
+            <ul id="player-list"></ul>
+        </div>
+        <button id="start-btn" onclick="startGame()" disabled>게임 시작하기</button>
+    </div>
+
+    <div id="game-screen" style="display: none;">
+        <div id="board">
+            <div id="player-0" class="player-piece p1" style="display:none"></div>
+            <div id="player-1" class="player-piece p2" style="display:none"></div>
+            <div id="player-2" class="player-piece p3" style="display:none"></div>
+            <div id="player-3" class="player-piece p4" style="display:none"></div>
+        </div>
+
+        <div id="ui-panel" class="pink-box">
+            <div id="current-turn-info">
+                <span id="turn-display">차례 기다리는 중...</span>
+            </div>
+            <div class="dice-area">
+                <div id="dice-value">🎲</div>
+                <button onclick="rollDice()" id="roll-btn">주사위 던지기</button>
+            </div>
+            <div id="mission-text">미션이 여기에 표시됩니다.</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
