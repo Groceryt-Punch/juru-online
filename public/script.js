@@ -35,9 +35,12 @@ socket.on('updateGameState', (data) => {
         piecesLayer.appendChild(piece);
         
         const cell = document.getElementById(`cell-${p.pos}`);
-        // 커진 칸 사이즈(120x130)에 맞춰 랜덤 분산 범위 확대
-        const randomX = Math.random() * 65 + 5; 
-        const randomY = Math.random() * 75 + 5; 
+        
+        // 말이 65px로 커졌으므로 120x130 칸 안에서 안전하게 분산
+        // 너무 가장자리로 나가지 않게 5~50 범위로 조정
+        const randomX = Math.random() * 45 + 5; 
+        const randomY = Math.random() * 55 + 5; 
+        
         piece.style.top = (cell.offsetTop + randomY) + "px";
         piece.style.left = (cell.offsetLeft + randomX) + "px";
     });
