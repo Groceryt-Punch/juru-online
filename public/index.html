@@ -2,18 +2,20 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <title>온라인 주루마블 - 무제한 모드</title>
+    <title>커스텀 이미지 멀티 주루마블</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
     <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
     <div id="lobby" class="pink-box">
-        <h2 class="logo">🍻 온라인 주루마블</h2>
+        <h2 class="logo">🍻 모두 젹셔보자!!</h2>
         <div id="setup-form">
             <input type="text" id="nick-input" placeholder="닉네임 입력" maxlength="5">
-            <button onclick="join()">입장하기</button>
+            <input type="text" id="img-input" placeholder="이미지 주소(URL) 입력 (선택)">
+            <button onclick="join()">게임 입장하기</button>
         </div>
+        <p style="font-size: 12px; color: #ff80ab; margin-top: 10px;">이미지가 없으면 기본 이모지로 설정됩니다!</p>
     </div>
 
     <div id="game-screen" style="display:none;">
@@ -26,7 +28,7 @@
             <div class="dice-area">
                 <button id="roll-btn" onclick="roll()" disabled>🎲 주사위 던지기</button>
             </div>
-            <div id="status-msg">다른 플레이어를 기다리고 있습니다.</div>
+            <div id="status-msg">플레이어를 기다리고 있습니다.</div>
         </div>
     </div>
     <script src="script.js"></script>
