@@ -22,7 +22,6 @@ body {
 #setup-form { display: flex; flex-direction: column; gap: 15px; }
 #setup-form input { padding: 15px; border: 3px solid #ffb6c1; border-radius: 15px; font-family: 'Jua'; font-size: 20px; width: 350px; }
 
-/* 보드판 사이즈 대폭 확대 */
 #board { 
     display: grid; 
     grid-template-columns: repeat(8, 120px); 
@@ -49,21 +48,23 @@ body {
     padding: 5px;
 }
 
+/* 말 사이즈 65px로 대폭 확대 */
 .player-piece { 
     position: absolute; 
-    width: 48px; 
-    height: 48px; 
+    width: 65px; 
+    height: 65px; 
     border-radius: 50%; 
-    border: 3px solid white; 
+    border: 4px solid white; 
     z-index: 10; 
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
     display: flex; 
     align-items: center; 
     justify-content: center; 
-    font-size: 26px; 
-    box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+    font-size: 32px; 
+    box-shadow: 0 6px 15px rgba(0,0,0,0.4);
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
 }
 
 #ui-panel { margin-top: 30px; width: 800px; }
